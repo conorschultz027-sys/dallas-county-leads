@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dallas County TX — Motivated Seller Leads</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #060b18;
+      --surface:   #0d1424;
+      --card:      #111827;
+      --border:    #1f2d45;
+      --border2:   #263548;
+      --accent:    #2563eb;
+      --accent2:   #3b82f6;
+      --text:      #f0f4ff;
+      --muted:     #6b7a99;
+      --muted2:    #8892aa;
+      --red:       #ef4444;
+      --red-bg:    rgba(239,68,68,.12);
+      --yellow:    #f59e0b;
+      --yellow-bg: rgba(245,158,11,.12);
+      --green:     #10b981;
+      --green-bg:  rgba(16,185,129,.12);
+      --blue-bg:   rgba(59,130,246,.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6,11,24,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .topbar-left { display: flex; align-items: center; gap: .75rem; }
+    .topbar-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .topbar h1 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .topbar-right { font-size: .72rem; color: var(--muted); }
+    #lastRun { color: var(--muted2); }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-box {
+      background: var(--surface);
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-box .n {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+    .stat-box .n.red    { color: #f87171; }
+    .stat-box .n.yellow { color: #fbbf24; }
+    .stat-box .n.green  { color: #34d399; }
+    .stat-box .n.blue   { color: #60a5fa; }
+    .stat-box .l { font-size: .72rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      padding: .9rem 1.5rem;
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .toolbar input,
+    .toolbar select {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 7px;
+      color: var(--text);
+      padding: .45rem .8rem;
+      font-size: .82rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .toolbar input:focus,
+    .toolbar select:focus { border-color: var(--accent2); }
+    .toolbar input { flex: 1; min-width: 220px; }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; }
+    .search-wrap input { width: 100%; padding-left: 2rem; }
+    .search-wrap .icon {
+      position: absolute; left: .65rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted); font-size: .85rem; pointer-events: none;
+    }
+    .btn-csv {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: .45rem 1.1rem;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      margin-left: auto;
+      transition: background .15s;
+    }
+    .btn-csv:hover { background: #1d4ed8; }
+    #countBadge {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 7px;
+      padding: .45rem .8rem;
+      font-size: .82rem;
+      color: var(--muted2);
+      white-space: nowrap;
+    }
+
+    /* ── TABLE WRAPPER ── */
+    .table-outer { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .8rem;
+    }
+
+    thead th {
+      background: var(--surface);
+      padding: .65rem .85rem;
+      text-align: left;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 56px;
+    }
+    thead th:hover { color: var(--text); }
+    thead th.sorted { color: var(--accent2); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+
+    tbody td {
+      padding: .7rem .85rem;
+      vertical-align: middle;
+    }
+
+    /* score */
+    .sc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: .95rem;
+    }
+    .sc.hi  { background: var(--red-bg);    color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+    .sc.mid { background: var(--yellow-bg); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+    .sc.lo  { background: var(--green-bg);  color: #34d399; border: 1px solid rgba(16,185,129,.3); }
+
+    /* type badge */
+    .badge {
+      display: inline-block;
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--blue-bg);
+      color: var(--accent2);
+      border: 1px solid rgba(59,130,246,.2);
+      white-space: nowrap;
+    }
+    .badge.lp       { background: rgba(239,68,68,.1);    color: #f87171; border-color: rgba(239,68,68,.2); }
+    .badge.nofc     { background: rgba(239,68,68,.1);    color: #f87171; border-color: rgba(239,68,68,.2); }
+    .badge.judgment { background: rgba(245,158,11,.1);   color: #fbbf24; border-color: rgba(245,158,11,.2); }
+    .badge.lien     { background: rgba(139,92,246,.1);   color: #a78bfa; border-color: rgba(139,92,246,.2); }
+    .badge.probate  { background: rgba(236,72,153,.1);   color: #f472b6; border-color: rgba(236,72,153,.2); }
+    .badge.tax      { background: rgba(245,158,11,.1);   color: #fbbf24; border-color: rgba(245,158,11,.2); }
+
+    /* owner cell */
+    .owner-name { font-weight: 600; color: var(--text); }
+    .grantee    { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+    /* address */
+    .addr-line  { color: var(--text); }
+    .addr-city  { font-size: .72rem; color: var(--muted); margin-top: 1px; }
+
+    /* flags */
+    .flags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .flag {
+      font-size: .62rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .flag.lp   { background: rgba(239,68,68,.12);   color: #fca5a5; }
+    .flag.fc   { background: rgba(239,68,68,.12);   color: #fca5a5; }
+    .flag.jud  { background: rgba(245,158,11,.12);  color: #fde68a; }
+    .flag.tax  { background: rgba(245,158,11,.12);  color: #fde68a; }
+    .flag.mech { background: rgba(139,92,246,.12);  color: #c4b5fd; }
+    .flag.prob { background: rgba(236,72,153,.12);  color: #fbcfe8; }
+    .flag.llc  { background: rgba(6,182,212,.12);   color: #67e8f9; }
+    .flag.new  { background: rgba(16,185,129,.12);  color: #6ee7b7; }
+    .flag.def  { background: rgba(148,163,184,.1);  color: var(--muted2); }
+
+    /* doc link */
+    a.doc-lnk {
+      color: var(--accent2);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: .78rem;
+    }
+    a.doc-lnk:hover { text-decoration: underline; }
+
+    /* amount */
+    .amt { font-weight: 600; white-space: nowrap; }
+    .amt.big { color: #f87171; }
+    .amt.mid { color: #fbbf24; }
+
+    /* empty */
+    .empty {
+      text-align: center;
+      padding: 5rem 1rem;
+      color: var(--muted);
+    }
+    .empty h2 { font-size: 1.1rem; margin-bottom: .5rem; color: var(--muted2); }
+
+    /* footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .72rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .topbar h1 { font-size: .9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-badge">Live</span>
+    <h1>Dallas County — Motivated Seller Leads</h1>
+  </div>
+  <div class="topbar-right" id="lastRun">Loading…</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-strip" id="stats"></div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="icon">🔍</span>
+    <input id="q" type="text" placeholder="Search owner, address, doc number…" oninput="render()" />
+  </div>
+  <select id="typeFilter" onchange="render()"><option value="">All Types</option></select>
+  <select id="scoreFilter" onchange="render()">
+    <option value="0">All Scores</option>
+    <option value="60">Score ≥ 60</option>
+    <option value="70">Score ≥ 70</option>
+    <option value="80">Score ≥ 80</option>
+    <option value="90">Score ≥ 90</option>
+  </select>
+  <select id="catFilter" onchange="render()"><option value="">All Categories</option></select>
+  <span id="countBadge">— records</span>
+  <button class="btn-csv" onclick="exportCSV()">
+    <span>⬇</span> Export GHL CSV
+  </button>
+</div>
+
+<!-- TABLE -->
+<div class="table-outer">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sort('score')"      id="th-score">Score</th>
+        <th onclick="sort('doc_type')"   id="th-doc_type">Type</th>
+        <th onclick="sort('filed')"      id="th-filed">Filed</th>
+        <th onclick="sort('owner')"      id="th-owner">Owner / Grantor</th>
+        <th>Property Address</th>
+        <th>Mailing Address</th>
+        <th onclick="sort('amount')"     id="th-amount">Amount</th>
+        <th>Flags</th>
+        <th>Doc #</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty" id="empty" style="display:none">
+    <h2>No records match your filters</h2>
+    <p>Try adjusting the search or score filter above.</p>
+  </div>
+</div>
+
+<footer id="foot">Dallas County Clerk – dallas.tx.publicsearch.us</footer>
+
+<script>
+  let ALL = [], sortCol = "score", sortAsc = false;
+
+  /* ── load ─────────────────────────────────────────────────── */
+  async function load() {
+    try {
+      const d = await fetch("records.json?t=" + Date.now()).then(r => r.json());
+      ALL = d.records || [];
+
+      const dr = d.date_range || {};
+      document.getElementById("lastRun").textContent =
+        `Last run: ${d.fetched_at ? new Date(d.fetched_at).toLocaleString() : "—"}  ·  ${dr.from||"?"}–${dr.to||"?"}`;
+
+      renderStats(d);
+      populateFilters();
+      document.getElementById("foot").textContent =
+        `${d.source||"Dallas County Clerk – dallas.tx.publicsearch.us"}  ·  ${ALL.length} total records`;
+      render();
+    } catch(e) {
+      document.getElementById("lastRun").textContent = "⚠ Could not load records.json";
+    }
+  }
+
+  /* ── stats ────────────────────────────────────────────────── */
+  function renderStats(d) {
+    const recs = d.records || [];
+    const hi   = recs.filter(r => r.score >= 80).length;
+    const mid  = recs.filter(r => r.score >= 60 && r.score < 80).length;
+    const wa   = d.with_address || 0;
+    const tots = recs.length;
+    document.getElementById("stats").innerHTML = [
+      { n: tots, cls: "blue",   l: "Total Leads"      },
+      { n: hi,   cls: "red",    l: "High Score ≥80"   },
+      { n: mid,  cls: "yellow", l: "Medium Score"     },
+      { n: wa,   cls: "green",  l: "With Address"     },
+    ].map(s =>
+      `<div class="stat-box">
+        <div class="n ${s.cls}">${s.n}</div>
+        <div class="l">${s.l}</div>
+      </div>`
+    ).join("");
+  }
+
+  /* ── filters ──────────────────────────────────────────────── */
+  function populateFilters() {
+    const typeSel = document.getElementById("typeFilter");
+    const catSel  = document.getElementById("catFilter");
+    const types = [...new Set(ALL.map(r => r.doc_type).filter(Boolean))].sort();
+    const cats  = [...new Set(ALL.map(r => r.cat).filter(Boolean))].sort();
+    types.forEach(t => {
+      const o = document.createElement("option");
+      o.value = t;
+      o.textContent = `${t}  (${ALL.filter(r=>r.doc_type===t).length})`;
+      typeSel.appendChild(o);
+    });
+    cats.forEach(c => {
+      const o = document.createElement("option");
+      o.value = c;
+      o.textContent = c.replace(/_/g," ").replace(/\b\w/g,l=>l.toUpperCase());
+      catSel.appendChild(o);
+    });
+  }
+
+  /* ── sort ─────────────────────────────────────────────────── */
+  function sort(col) {
+    sortAsc = (sortCol === col) ? !sortAsc : (col !== "score");
+    sortCol = col;
+    document.querySelectorAll("thead th").forEach(th => th.classList.remove("sorted"));
+    const th = document.getElementById(`th-${col}`);
+    if (th) th.classList.add("sorted");
+    render();
+  }
+
+  /* ── render ───────────────────────────────────────────────── */
+  function render() {
+    const q    = document.getElementById("q").value.toLowerCase();
+    const typ  = document.getElementById("typeFilter").value;
+    const cat  = document.getElementById("catFilter").value;
+    const minS = +document.getElementById("scoreFilter").value || 0;
+
+    let rows = ALL.filter(r => {
+      if (typ  && r.doc_type !== typ)  return false;
+      if (cat  && r.cat     !== cat)   return false;
+      if (r.score < minS)              return false;
+      if (q) {
+        const hay = [r.owner, r.doc_num, r.prop_address,
+                     r.mail_address, r.grantee, r.legal].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    rows.sort((a,b) => {
+      let av = a[sortCol]??"", bv = b[sortCol]??"";
+      if (typeof av==="number") return sortAsc ? av-bv : bv-av;
+      return sortAsc ? String(av).localeCompare(String(bv))
+                     : String(bv).localeCompare(String(av));
+    });
+
+    document.getElementById("countBadge").textContent =
+      `${rows.length.toLocaleString()} record${rows.length!==1?"s":""}`;
+
+    const tbody = document.getElementById("tbody");
+    const empty = document.getElementById("empty");
+
+    if (!rows.length) {
+      tbody.innerHTML = "";
+      empty.style.display = "";
+      return;
+    }
+    empty.style.display = "none";
+
+    tbody.innerHTML = rows.map(r => {
+      const s   = r.score||0;
+      const scCls = s>=80?"hi":s>=60?"mid":"lo";
+      const typCls = badgeCls(r.doc_type||"");
+      const amt = r.amount!=null
+        ? `<span class="amt ${r.amount>100000?"big":r.amount>50000?"mid":""}">`
+          + `$${Number(r.amount).toLocaleString()}</span>`
+        : `<span style="color:var(--muted)">—</span>`;
+      const pa = r.prop_address
+        ? `<div class="addr-line">${x(r.prop_address)}</div>`
+          + `<div class="addr-city">${x(r.prop_city)} ${x(r.prop_zip)}</div>`
+        : `<span style="color:var(--muted)">—</span>`;
+      const ma = r.mail_address
+        ? `<div class="addr-line">${x(r.mail_address)}</div>`
+          + `<div class="addr-city">${x(r.mail_city)}, ${x(r.mail_state)} ${x(r.mail_zip)}</div>`
+        : `<span style="color:var(--muted)">—</span>`;
+      const flags = (r.flags||[]).map(f => `<span class="flag ${flagCls(f)}">${x(f)}</span>`).join("");
+      const lnk = r.clerk_url
+        ? `<a class="doc-lnk" href="${x(r.clerk_url)}" target="_blank" rel="noopener">${x(r.doc_num)}</a>`
+        : `<span style="color:var(--muted)">${x(r.doc_num)}</span>`;
+
+      return `<tr>
+        <td><span class="sc ${scCls}">${s}</span></td>
+        <td>
+          <span class="badge ${typCls}">${x(r.doc_type||"")}</span>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:3px">${x(r.cat_label||"")}</div>
+        </td>
+        <td style="white-space:nowrap;color:var(--muted2)">${x(r.filed||"—")}</td>
+        <td>
+          <div class="owner-name">${x(r.owner||"—")}</div>
+          ${r.grantee?`<div class="grantee">→ ${x(r.grantee)}</div>`:""}
+        </td>
+        <td>${pa}</td>
+        <td>${ma}</td>
+        <td>${amt}</td>
+        <td><div class="flags">${flags||`<span style="color:var(--muted)">—</span>`}</div></td>
+        <td>${lnk}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  /* ── badge class helpers ──────────────────────────────────── */
+  function badgeCls(type) {
+    const t = type.toUpperCase();
+    if (t==="LP")   return "lp";
+    if (t==="NOFC") return "nofc";
+    if (t.includes("JUD")) return "judgment";
+    if (t.includes("LN"))  return "lien";
+    if (t==="PRO")  return "probate";
+    if (t.includes("TAX")) return "tax";
+    return "";
+  }
+  function flagCls(f) {
+    if (f.includes("Lis pendens"))   return "lp";
+    if (f.includes("Pre-foreclos"))  return "fc";
+    if (f.includes("Judgment"))      return "jud";
+    if (f.includes("Tax"))           return "tax";
+    if (f.includes("Mechanic"))      return "mech";
+    if (f.includes("Probate"))       return "prob";
+    if (f.includes("LLC"))           return "llc";
+    if (f.includes("New this week")) return "new";
+    return "def";
+  }
+
+  /* ── CSV export ───────────────────────────────────────────── */
+  function exportCSV() {
+    const H = ["First Name","Last Name",
+      "Mailing Address","Mailing City","Mailing State","Mailing Zip",
+      "Property Address","Property City","Property State","Property Zip",
+      "Lead Type","Document Type","Date Filed","Document Number",
+      "Amount/Debt Owed","Seller Score","Motivated Seller Flags",
+      "Source","Public Records URL"];
+    const rows = ALL.map(r => {
+      const [fn,ln] = splitName(r.owner||"");
+      return [fn,ln,
+        r.mail_address||"",r.mail_city||"",r.mail_state||"",r.mail_zip||"",
+        r.prop_address||"",r.prop_city||"",r.prop_state||"",r.prop_zip||"",
+        r.cat_label||"",r.doc_type||"",r.filed||"",r.doc_num||"",
+        r.amount??""  ,r.score||0,(r.flags||[]).join("; "),
+        "Dallas County Clerk – dallas.tx.publicsearch.us",r.clerk_url||""];
+    });
+    const csv = [H,...rows].map(row =>
+      row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")
+    ).join("\n");
+    const a = document.createElement("a");
+    a.href     = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+    a.download = `dallas_county_leads_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  function splitName(s) {
+    s = s.trim();
+    if (!s) return ["",""];
+    if (s.includes(",")) { const [l,f]=s.split(",",2); return [f.trim(),l.trim()]; }
+    const p = s.split(" ");
+    return p.length===1?[p[0],""]: [p.slice(0,-1).join(" "),p[p.length-1]];
+  }
+
+  function x(s) {
+    return String(s||"")
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  load();
+</script>
+</body>
+</html>
