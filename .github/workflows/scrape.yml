@@ -1,0 +1,101 @@
+name: Scrape — Dallas County Motivated Seller Leads
+
+on:
+  schedule:
+    - cron: "0 9 * * *"   # 8:00 AM UTC = 3:00 AM CST daily
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: "Days to look back (default 7)"
+        required: false
+        default: "7"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    name: Scrape & Enrich
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: scraper/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests beautifulsoup4 lxml dbfread
+
+      - name: Create directories
+        run: mkdir -p dashboard data .cache
+
+      - name: Run scraper
+        env:
+          LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '7' }}
+          PYTHONUNBUFFERED: "1"
+        run: python scraper/fetch.py
+
+      - name: Verify output
+        run: |
+          python - <<'EOF'
+          import json
+          with open("dashboard/records.json") as f:
+              d = json.load(f)
+          print(f"Total records : {d['total']}")
+          print(f"With address  : {d['with_address']}")
+          print(f"Fetched at    : {d['fetched_at']}")
+          if d["records"]:
+              r = d["records"][0]
+              print(f"Top lead      : score={r['score']}  {r['doc_type']}  {r['owner'][:50]}")
+          EOF
+
+      - name: Commit updated records
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dashboard/records.json data/records.json data/ghl_export.csv || true
+          git diff --staged --quiet \
+            && echo "Nothing changed." \
+            || git commit -m "chore: leads update $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push origin HEAD
+
+      - name: Upload GHL CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghl-export-${{ github.run_id }}
+          path: data/ghl_export.csv
+          retention-days: 30
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard/
+
+  deploy:
+    name: Deploy Dashboard
+    needs: scrape
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
