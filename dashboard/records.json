@@ -1,10 +1,10 @@
 {
-  "fetched_at": "2026-06-05T11:58:34.333904+00:00",
+  "fetched_at": "2026-06-06T10:51:41.475488+00:00",
   "source": "Dallas County Clerk \u2013 dallas.tx.publicsearch.us",
   "county": "Dallas County, TX",
   "date_range": {
-    "from": "2026-05-29",
-    "to": "2026-06-05"
+    "from": "2026-05-30",
+    "to": "2026-06-06"
   },
   "total": 0,
   "with_address": 0,
